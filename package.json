@@ -1,0 +1,25 @@
+{
+  "name": "image-search-agent",
+  "version": "1.0.0",
+  "description": "An agent that fetches images from Pexels and Pixabay based on user search queries",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "lint": "eslint src/",
+    "test": "jest --coverage"
+  },
+  "keywords": ["image", "search", "pexels", "pixabay", "agent"],
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "axios": "^1.7.7"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.4",
+    "supertest": "^7.0.0"
+  }
+}
