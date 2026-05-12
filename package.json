@@ -1,7 +1,7 @@
 {
-  "name": "image-search-agent",
+  "name": "topic-explainer-agent",
   "version": "1.0.0",
-  "description": "An agent that fetches images from Pexels and Pixabay based on user search queries",
+  "description": "An agent that gives explanations for topics provided by the user",
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
@@ -9,7 +9,7 @@
     "lint": "eslint src/",
     "test": "jest --coverage"
   },
-  "keywords": ["image", "search", "pexels", "pixabay", "agent"],
+  "keywords": ["topic", "explanation", "agent", "wikipedia"],
   "license": "MIT",
   "dependencies": {
     "dotenv": "^16.4.5",

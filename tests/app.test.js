@@ -5,60 +5,44 @@ describe('Health Check', () => {
   it('GET /health returns 200 with status ok', async () => {
     const res = await request(app).get('/health');
     expect(res.statusCode).toBe(200);
-    expect(res.body).toEqual({ status: 'ok', service: 'image-search-agent' });
+    expect(res.body).toEqual({ status: 'ok', service: 'topic-explainer-agent' });
   });
 });
 
-describe('GET /api/search', () => {
-  it('returns 400 when query parameter is missing', async () => {
-    const res = await request(app).get('/api/search');
+describe('GET /api/explain', () => {
+  it('returns 400 when topic parameter is missing', async () => {
+    const res = await request(app).get('/api/explain');
+    expect(res.statusCode).toBe(400);
+    expect(res.body.error).toBe('Validation Error');
+    expect(res.body.message).toContain('topic');
+  });
+
+  it('returns 400 when topic is empty', async () => {
+    const res = await request(app).get('/api/explain?topic=');
     expect(res.statusCode).toBe(400);
     expect(res.body.error).toBe('Validation Error');
   });
 
-  it('returns 400 when query is empty', async () => {
-    const res = await request(app).get('/api/search?query=');
+  it('returns 400 when topic exceeds 300 characters', async () => {
+    const longTopic = 'a'.repeat(301);
+    const res = await request(app).get(`/api/explain?topic=${longTopic}`);
     expect(res.statusCode).toBe(400);
-    expect(res.body.error).toBe('Validation Error');
+    expect(res.body.message).toContain('300 characters');
   });
 
-  it('returns 400 when query exceeds 200 characters', async () => {
-    const longQuery = 'a'.repeat(201);
-    const res = await request(app).get(`/api/search?query=${longQuery}`);
-    expect(res.statusCode).toBe(400);
-    expect(res.body.message).toContain('200 characters');
-  });
-
-  it('returns 400 when page is not a positive integer', async () => {
-    const res = await request(app).get('/api/search?query=cats&page=-1');
-    expect(res.statusCode).toBe(400);
-    expect(res.body.message).toContain('positive integer');
-  });
-
-  it('returns 400 when per_page exceeds 80', async () => {
-    const res = await request(app).get('/api/search?query=cats&per_page=100');
-    expect(res.statusCode).toBe(400);
-    expect(res.body.message).toContain('between 1 and 80');
-  });
-
-  it('returns valid JSON response with correct structure when API keys missing', async () => {
-    const originalPexels = process.env.PEXELS_API_KEY;
-    const originalPixabay = process.env.PIXABAY_API_KEY;
-    delete process.env.PEXELS_API_KEY;
-    delete process.env.PIXABAY_API_KEY;
-
-    const res = await request(app).get('/api/search?query=nature');
+  it('returns explanation for a valid topic', async () => {
+    const res = await request(app).get('/api/explain?topic=JavaScript');
     expect(res.statusCode).toBe(200);
-    expect(res.body).toHaveProperty('query', 'nature');
-    expect(res.body).toHaveProperty('totalResults');
-    expect(res.body).toHaveProperty('sources');
-    expect(res.body).toHaveProperty('images');
-    expect(res.body.sources).toHaveProperty('pexels');
-    expect(res.body.sources).toHaveProperty('pixabay');
-    expect(res.body.sources.pexels.error).toContain('not configured');
-    expect(res.body.sources.pixabay.error).toContain('not configured');
+    expect(res.body.success).toBe(true);
+    expect(res.body.data).toHaveProperty('topic');
+    expect(res.body.data).toHaveProperty('summary');
+    expect(res.body.data.summary.length).toBeGreaterThan(0);
+    expect(res.body.data).toHaveProperty('url');
+  }, 15000);
 
-    process.env.PEXELS_API_KEY = originalPexels;
-    process.env.PIXABAY_API_KEY = originalPixabay;
-  });
+  it('returns 404 for a non-existent topic', async () => {
+    const res = await request(app).get('/api/explain?topic=xyznonexistenttopic12345abc');
+    expect(res.statusCode).toBe(404);
+    expect(res.body.error).toBe('Not Found');
+  }, 15000);
 });

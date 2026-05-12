@@ -1,6 +1,6 @@
 require('dotenv').config();
 const express = require('express');
-const searchRouter = require('./routes/search');
+const explainRouter = require('./routes/explain');
 const { errorHandler } = require('./middleware/errorHandler');
 
 const app = express();
@@ -8,10 +8,10 @@ const app = express();
 app.use(express.json());
 
 app.get('/health', (_req, res) => {
-  res.json({ status: 'ok', service: 'image-search-agent' });
+  res.json({ status: 'ok', service: 'topic-explainer-agent' });
 });
 
-app.use('/api', searchRouter);
+app.use('/api', explainRouter);
 
 app.use(errorHandler);
 

@@ -1,42 +1,24 @@
-# Image Search Agent
+# Topic Explainer Agent
 
-An agent that accepts user search queries and fetches images from multiple image repositories (Pexels and Pixabay), returning combined results as a JSON object.
+An agent that accepts a topic from the user and returns a detailed explanation as a JSON object. Uses Wikipedia's REST API to provide accurate explanations for any topic.
 
 ## Features
 
-- Search images across Pexels and Pixabay simultaneously
-- Unified JSON response format from all sources
-- Pagination support
-- Input validation and error handling
-- Graceful degradation when individual APIs are unavailable
+- Get explanations for any topic via a simple API call
+- Returns structured JSON with summary, description, source URL, and thumbnail
+- Input validation and meaningful error messages
+- No API key required — uses Wikipedia's free public API
 
 ## Setup
 
 ### Prerequisites
 
 - Node.js >= 18
-- API keys from [Pexels](https://www.pexels.com/api/) and [Pixabay](https://pixabay.com/api/docs/)
 
 ### Installation
 
 ```bash
 npm install
-```
-
-### Configuration
-
-Copy the example environment file and add your API keys:
-
-```bash
-cp .env.example .env
-```
-
-Edit `.env` with your API keys:
-
-```
-PEXELS_API_KEY=your_pexels_api_key
-PIXABAY_API_KEY=your_pixabay_api_key
-PORT=3000
 ```
 
 ## Usage
@@ -59,49 +41,45 @@ npm start
 GET /health
 ```
 
-#### Search Images
+#### Get Explanation for a Topic
 
 ```
-GET /api/search?query=<search_term>&page=<page>&per_page=<count>
+GET /api/explain?topic=<your_topic>
 ```
 
 **Parameters:**
 
-| Parameter | Required | Default | Description |
-|-----------|----------|---------|-------------|
-| `query` | Yes | - | Search term (max 200 chars) |
-| `page` | No | 1 | Page number |
-| `per_page` | No | 10 | Results per page per source (1-80) |
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| `topic` | Yes | The topic to explain (max 300 chars) |
 
 **Example Request:**
 
 ```bash
-curl "http://localhost:3000/api/search?query=sunset&per_page=5"
+curl "http://localhost:3000/api/explain?topic=quantum+computing"
 ```
 
 **Example Response:**
 
 ```json
 {
-  "query": "sunset",
-  "totalResults": 10,
-  "sources": {
-    "pexels": { "totalResults": 8000, "count": 5, "error": null },
-    "pixabay": { "totalResults": 5000, "count": 5, "error": null }
-  },
-  "images": [
-    {
-      "id": 12345,
-      "source": "pexels",
-      "photographer": "John Doe",
-      "description": "Beautiful sunset over ocean",
-      "url": "https://www.pexels.com/photo/...",
-      "thumbnail": "https://images.pexels.com/...",
-      "fullSize": "https://images.pexels.com/...",
-      "width": 1920,
-      "height": 1080
-    }
-  ]
+  "success": true,
+  "data": {
+    "topic": "Quantum computing",
+    "summary": "A quantum computer is a computer that exploits quantum mechanical phenomena...",
+    "description": "Exploitation of quantum phenomena to perform computation",
+    "url": "https://en.wikipedia.org/wiki/Quantum_computing",
+    "thumbnail": "https://upload.wikimedia.org/..."
+  }
+}
+```
+
+**Error Response (topic not found):**
+
+```json
+{
+  "error": "Not Found",
+  "message": "No explanation found for topic: \"xyzabc\""
 }
 ```
 

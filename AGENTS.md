@@ -2,7 +2,7 @@
 
 ## Cursor Cloud specific instructions
 
-This is a Node.js/Express image search agent that queries Pexels and Pixabay APIs.
+This is a Node.js/Express topic explainer agent that fetches explanations from Wikipedia's REST API.
 
 ### Quick reference
 
@@ -13,7 +13,7 @@ This is a Node.js/Express image search agent that queries Pexels and Pixabay API
 
 ### Key notes
 
-- The app gracefully handles missing API keys — it returns error messages in the response rather than crashing. This means you can start the server and test the endpoint structure without API keys configured.
-- Both external API services (Pexels, Pixabay) are queried in parallel via `Promise.allSettled`, so one failing does not block the other.
-- Environment variables are loaded from `.env` via `dotenv` (file not committed — copy `.env.example`).
-- The test suite uses `supertest` for HTTP-level integration tests and does not require live API keys.
+- No API keys required — uses Wikipedia's free public REST API (`/api/rest_v1/page/summary`).
+- The test suite makes live HTTP calls to Wikipedia; tests require network access.
+- Environment variables loaded from `.env` via `dotenv` (optional, only `PORT` is configurable).
+- The app returns 404 with a clear message when a topic is not found on Wikipedia.
