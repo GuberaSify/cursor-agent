@@ -2,18 +2,20 @@
 
 ## Cursor Cloud specific instructions
 
-This is a Node.js/Express topic explainer agent that fetches explanations from Wikipedia's REST API.
+This is a Node.js/Express service that programmatically triggers Cursor Cloud Agents via REST endpoints.
 
 ### Quick reference
 
 - **Install deps:** `npm install`
-- **Dev server:** `npm run dev` (uses nodemon for hot-reload on port 3000)
-- **Tests:** `npm test`
+- **Dev server (mock mode):** `USE_MOCK_AGENT=true npm run dev` (port 3000, hot-reload via nodemon)
+- **Tests:** `npm test` (uses mock client, no API key needed)
 - **Lint:** `npm run lint`
 
 ### Key notes
 
-- No API keys required — uses Wikipedia's free public REST API (`/api/rest_v1/page/summary`).
-- The test suite makes live HTTP calls to Wikipedia; tests require network access.
-- Environment variables loaded from `.env` via `dotenv` (optional, only `PORT` is configurable).
-- The app returns 404 with a clear message when a topic is not found on Wikipedia.
+- Set `USE_MOCK_AGENT=true` for local development/testing — no Cursor API key needed.
+- The mock client simulates agent creation and auto-completes after 2 seconds.
+- Tests always run in mock mode (set in test files via `process.env.USE_MOCK_AGENT = 'true'`).
+- For live mode, set `CURSOR_API_KEY` in `.env` and ensure `USE_MOCK_AGENT` is unset or `false`.
+- The `POST /api/agents/run` endpoint supports `wait: true` for synchronous polling.
+- GitHub webhook handler at `POST /api/webhooks/github` auto-maps events to agent prompts.

@@ -1,20 +1,20 @@
 {
-  "name": "topic-explainer-agent",
+  "name": "cursor-agent-runner",
   "version": "1.0.0",
-  "description": "An agent that gives explanations for topics provided by the user",
+  "description": "A programmatic runner for Cursor Cloud Agents — trigger agents from your own endpoints, webhooks, or CI/CD",
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
     "lint": "eslint src/",
-    "test": "jest --coverage"
+    "test": "jest --coverage --forceExit"
   },
-  "keywords": ["topic", "explanation", "agent", "wikipedia"],
+  "keywords": ["cursor", "agent", "cloud-agent", "automation", "webhook"],
   "license": "MIT",
   "dependencies": {
+    "axios": "^1.7.7",
     "dotenv": "^16.4.5",
-    "express": "^4.21.0",
-    "axios": "^1.7.7"
+    "express": "^4.21.0"
   },
   "devDependencies": {
     "eslint": "^8.57.0",
